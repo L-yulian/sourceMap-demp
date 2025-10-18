@@ -6,6 +6,23 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     base: './',
+    build: {
+      outDir: 'dist',
+      sourceMap: true,
+      emptyOutDir: true,
+      // rollupOptions: {
+      //   // make sure to externalize deps that shouldn't be bundled
+      //   // into your library
+      //   external: ['vue'],
+      //   output: {
+      //     // Provide global variables to use in the UMD build
+      //     // for externalized deps
+      //     globals: {
+      //       vue: 'Vue',
+      //     },
+      //   },
+      // },
+    },
     test: {
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'e2e/**'],
