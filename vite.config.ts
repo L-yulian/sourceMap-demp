@@ -10,8 +10,9 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'dist',
-    sourceMap: true,
+    sourcemap: true,
     emptyOutDir: true,
+
     // rollupOptions: {
     //   // make sure to externalize deps that shouldn't be bundled
     //   // into your library
