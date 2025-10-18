@@ -19,4 +19,4 @@ const findCodeBySourceMap = async (stackFrame: any) => {
   console.log('[ 还原之后的源代码 ] >', code)
 }
 
-export default { findCodeBySourceMap }
+export { findCodeBySourceMap }
