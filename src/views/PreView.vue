@@ -1,0 +1,55 @@
+<template>
+  <div class="pre-code">
+    <div class="error-detail">
+      <pre class="error-code" v-html="preLine()"></pre>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { defineProps } from 'vue'
+defineProps({
+  origin: Object,
+})
+
+const preLine = () => {
+  const line = origin.line
+  const originCodeLine = origin.source.split('\n')
+  const len = originCodeLine.length - 1
+  const start = line - 3 >= 0 ? len : 0
+  const end = start + 6 >= len ? len : start + 5
+  const newLines = []
+  for (let i = start; i <= end; i++) {
+    const content = i + 1 + '.  ' + encodeHTML(originCodeLine[i])
+    newLines.push(`
+        <div class='code-line${i + 1 === line ? 'heightlight' : ''}'>${content}</div>
+    `)
+  }
+  return newLines.join('')
+}
+
+const encodeHTML = (str) => {
+  if (!str || str.length === 0) return ''
+  return str
+    .replace(/&/g, '&#38;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+}
+</script>
+
+<style scoped>
+.error-code {
+  padding: 10px;
+  overflow: hidden;
+  font-family: consolas, monospace;
+  word-wrap: normal;
+}
+.code-line {
+  padding: 4px;
+}
+.heightlight {
+  color: #fff;
+  background: #f12926;
+}
+</style>

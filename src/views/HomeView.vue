@@ -19,7 +19,8 @@
         </el-row>
         <el-row>
           <template v-if="item.origin">
-            {{ item.origin }}
+            <PreView :origin="item.origin" />
+            <!-- {{ item.origin }} -->
           </template>
           <template v-else>
             <div>{{ item.fileName }}</div>
@@ -45,6 +46,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import sourceMap from 'source-map-js'
+import PreView from './PreView.vue'
+import { ElMessage } from 'element-plus'
+
 const js_error = ref<any>(null)
 const isError = ref(false)
 const activeName = ref<string>('1')
@@ -75,7 +79,7 @@ const openDialog = (item: any, index: number) => {
   }
 }
 const sourceMapUpload = async (file: any) => {
-  if (file.name.endsWith('.map')) {
+  if (file.name.substring(file.name.lastIndexOf('.') + 1) !== 'map') {
     ElMessage.error('请上传正确的sourceMap文件')
   }
   const reader = new FileReader()
