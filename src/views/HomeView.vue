@@ -1,11 +1,14 @@
 <template>
   <div v-if="isError">
+    <pre>
+      {{ js_error.stack }}
+    </pre>
     <el-collapse v-model="activeName" accordion>
       <el-collapse-item
         v-for="(item, index) in js_error.stack_frames"
         :key="index"
-        :title="item.source"
         :name="index"
+        :title="item.source"
       >
         <el-row :gutter="20">
           <el-col :span="20">
@@ -13,14 +16,13 @@
           </el-col>
           <el-col :span="4">
             <el-button type="primary" size="small" @click="openDialog(item, index)">
-              映射源码
-            </el-button>
+              映射源码</el-button
+            >
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="20">
           <template v-if="item.origin">
-            <PreView :origin="item.origin" />
-            <!-- {{ item.origin }} -->
+            <PreView :orgin="item.origin"></PreView>
           </template>
           <template v-else>
             <div>{{ item.fileName }}</div>
@@ -28,32 +30,31 @@
         </el-row>
       </el-collapse-item>
     </el-collapse>
-    <el-dialog v-model="dialogVisible" title="sourceMap源码映射" width="500">
-      <el-tabs>
+    <el-dialog v-model="dialogVisible" title="soureMap源码映射" width="500">
+      <el-tabs v-model="tabActiveName" class="demo-tabs">
         <el-tab-pane label="本地上传" name="local">
           <el-upload drag :before-upload="sourceMapUpload">
+            <i class="el-icon-upload"></i>
             <div>将文件拖到此处，或者<em>点击上传</em></div>
           </el-upload>
         </el-tab-pane>
-        <el-tab-pane label="远程加载" name="request">
-          <el-upload></el-upload>
-        </el-tab-pane>
+        <el-tab-pane label="远程加载" name="request">远程加载</el-tab-pane>
       </el-tabs>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import sourceMap from 'source-map-js'
-import PreView from './PreView.vue'
 import { ElMessage } from 'element-plus'
-
+import sourceMap from 'source-map-js'
+import { onMounted, ref } from 'vue'
+import PreView from './PreView.vue'
+const dialogVisible = ref(false)
+const tabActiveName = ref('local')
+const activeName = ref<string[]>(['1'])
 const js_error = ref<any>(null)
 const isError = ref(false)
-const activeName = ref<string>('1')
-const dialogVisible = ref(false)
-let stackFrameObj: any = {
+let stackFrameObj = {
   line: 0,
   column: 0,
   index: 0,
@@ -69,7 +70,6 @@ onMounted(() => {
     console.log(e)
   }
 })
-
 const openDialog = (item: any, index: number) => {
   dialogVisible.value = true
   stackFrameObj = {
@@ -92,25 +92,22 @@ const sourceMapUpload = async (file: any) => {
   }
   return false
 }
-
 const getSource = async (sourcemap: any, line: number, column: number) => {
   try {
-    const consumer = await new sourceMap.SourceMapConsumer(sourcemap)
+    const consumer = await new sourceMap.SourceMapConsumer(JSON.parse(sourcemap))
+    // 通过报错位置查找到对应的源文件名称以及报错行数
     const originalPosition = consumer.originalPositionFor({
       line: line,
       column: column,
     })
-    // 那么就可以通过 sourceContentFor 这个方法找到报错的源代码
     const source = consumer.sourceContentFor(originalPosition.source)
     return {
       source,
       column: originalPosition.column,
       line: originalPosition.line,
     }
-  } catch (error) {
+  } catch (e) {
     ElMessage.error('sourceMap解析失败')
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

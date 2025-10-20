@@ -28,6 +28,9 @@ export default defineConfigWithVueTs(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'vue/block-lang': 'off',
+      'vue/no-v-html': 'off',
     },
   },
 )
