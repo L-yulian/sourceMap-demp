@@ -81,6 +81,7 @@ const openDialog = (item: any, index: number) => {
 const sourceMapUpload = async (file: any) => {
   if (file.name.substring(file.name.lastIndexOf('.') + 1) !== 'map') {
     ElMessage.error('请上传正确的sourceMap文件')
+    return
   }
   const reader = new FileReader()
   reader.readAsText(file, 'utf-8')
@@ -89,6 +90,7 @@ const sourceMapUpload = async (file: any) => {
     js_error.value.stack_frames[stackFrameObj.index].origin = code
     dialogVisible.value = false
   }
+  return false
 }
 
 const getSource = async (sourcemap: any, line: number, column: number) => {

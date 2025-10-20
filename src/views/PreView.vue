@@ -38,7 +38,7 @@ const encodeHTML = (str) => {
 }
 </script>
 
-<style scoped>
+<style>
 .error-code {
   padding: 10px;
   overflow: hidden;
